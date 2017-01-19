@@ -1,0 +1,25 @@
+{
+  "name": "xprt64/authentication",
+  "description": "Authentication for PHP",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Constantin GALBENU",
+      "email": "gica.galbenu@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "firebase/php-jwt": "dev-master",
+    "xprt64/types": "^1.0.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Gica\\Authentication\\": "src/Gica/Authentication/"
+    }
+  }
+}
