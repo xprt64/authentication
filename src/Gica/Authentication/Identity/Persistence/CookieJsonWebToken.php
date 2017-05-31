@@ -7,8 +7,9 @@ namespace Gica\Authentication\Identity\Persistence;
 
 
 use Firebase\JWT\JWT;
+use Gica\Authentication\Identity\Persistence;
 
-class CookieJsonWebToken implements \Gica\Authentication\Identity\Persistence
+class CookieJsonWebToken implements Persistence, TokenBasedPersistence
 {
     private $secret;
     private $cookieName;
@@ -21,13 +22,13 @@ class CookieJsonWebToken implements \Gica\Authentication\Identity\Persistence
         $this->ttl = $ttl;
     }
 
-    private function createToken(string $userId, $serverName = '')
+    public function createToken(string $userId, int $ttl, string $serverName = '')
     {
 
         $tokenId = \base64_encode(\random_bytes(32));
         $issuedAt = \time();
         $notBefore = $issuedAt;             //Adding 10 seconds
-        $expire = $notBefore + $this->ttl;            // Adding xxx seconds
+        $expire = $notBefore + $ttl;            // Adding xxx seconds
 
         /*
          * Create the token as an array
@@ -52,7 +53,7 @@ class CookieJsonWebToken implements \Gica\Authentication\Identity\Persistence
 
     public function save($identityId)
     {
-        $token = $this->createToken((string)$identityId);
+        $token = $this->createToken((string)$identityId, $this->ttl);
 
         if (false === setcookie($this->cookieName, $token, time() + $this->ttl, '/'))
             throw new \Exception("could not set cookie {$this->cookieName}");
