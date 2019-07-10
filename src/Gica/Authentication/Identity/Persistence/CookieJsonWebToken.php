@@ -29,6 +29,11 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         $this->ttl = $ttl;
     }
 
+    public function setCookieTtl(int $cookieTtl)
+    {
+        $this->cookieTtl = $cookieTtl;
+    }
+
     public function createToken(string $userId, int $ttl, string $serverName = '')
     {
 
