@@ -14,12 +14,14 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     private $secret;
     private $cookieName;
     private $ttl;
+    private $cookieTtl;
 
     public function __construct($secret, $cookieName = 'jwt', $ttl = 3600000)
     {
         $this->secret = $secret;
         $this->cookieName = $cookieName;
         $this->ttl = $ttl;
+        $this->cookieTtl = $ttl;
     }
 
     public function setTtl(int $ttl)
@@ -60,7 +62,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     {
         $token = $this->createToken((string)$identityId, $this->ttl);
 
-        if (false === setcookie($this->cookieName, $token, time() + $this->ttl, '/'))
+        if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/'))
             throw new \Exception("could not set cookie {$this->cookieName}");
     }
 
