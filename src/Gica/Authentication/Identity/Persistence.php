@@ -8,12 +8,17 @@ namespace Gica\Authentication\Identity;
 
 interface Persistence
 {
-    public function save($identityId);
+    public function save($identityId, array $additionalData = []);
 
     /**
      * @return int
      */
     public function load();
+
+    /**
+     * @return \stdClass
+     */
+    public function loadAdditionalData();
 
     public function clear();
 }

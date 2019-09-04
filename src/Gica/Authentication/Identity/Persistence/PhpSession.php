@@ -29,10 +29,11 @@ class PhpSession implements Persistence
         return $this;
     }
 
-    public function save($identityId)
+    public function save($identityId, array $additionalData = [])
     {
         $this->sessionStart();
         $_SESSION[$this->getSessionKeyName()] = $identityId;
+        $_SESSION[$this->getSessionKeyName() . '_additionalData'] = $additionalData;
         session_write_close();
     }
 
@@ -73,5 +74,14 @@ class PhpSession implements Persistence
     public function getSessionId()
     {
         return session_id();
+    }
+
+    /**
+     * @return \stdClass
+     */
+    public function loadAdditionalData()
+    {
+        $this->sessionStart();
+        return $_SESSION[$this->getSessionKeyName() . '_additionalData'];
     }
 }

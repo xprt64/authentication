@@ -9,19 +9,15 @@ namespace Gica\Authentication\Identity\Persistence;
 
 class InMemory implements \Gica\Authentication\Identity\Persistence
 {
-    /**
-     * @var \Gica\Interfaces\Entity
-     */
     static $storage;
+    static $storageAdditionalData;
 
-    public function save($identityId)
+    public function save($identityId, array $additionalData = [])
     {
         self::$storage = $identityId;
+        self::$storageAdditionalData = $additionalData;
     }
 
-    /**
-     * @return \Gica\Interfaces\Entity
-     */
     public function load()
     {
         return self::$storage;
@@ -30,5 +26,13 @@ class InMemory implements \Gica\Authentication\Identity\Persistence
     public function clear()
     {
         self::$storage = null;
+    }
+
+    /**
+     * @return \stdClass
+     */
+    public function loadAdditionalData()
+    {
+        return self::$storageAdditionalData;
     }
 }

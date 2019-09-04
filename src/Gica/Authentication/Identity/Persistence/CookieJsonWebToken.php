@@ -34,7 +34,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         $this->cookieTtl = $cookieTtl;
     }
 
-    public function createToken(string $userId, int $ttl, string $serverName = '')
+    public function createToken(string $userId, int $ttl, array $additionalData = [])
     {
 
         $tokenId = \base64_encode(\random_bytes(32));
@@ -42,18 +42,17 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         $notBefore = $issuedAt;             //Adding 10 seconds
         $expire = $notBefore + $ttl;            // Adding xxx seconds
 
+        $additionalData['userId'] = $userId;
         /*
          * Create the token as an array
          */
         $data = [
             'iat'  => $issuedAt,         // Issued at: time when the token was generated
             'jti'  => $tokenId,          // Json Token Id: an unique identifier for the token
-            'iss'  => $serverName,       // Issuer
+            'iss'  => 'localhost',       // Issuer
             'nbf'  => $notBefore,        // Not before
             'exp'  => $expire,           // Expire
-            'data' => [                  // Data related to the signer user
-                'userId' => $userId, // userid from the users table
-            ],
+            'data' => $additionalData,
         ];
 
         return JWT::encode(
@@ -63,9 +62,9 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         );
     }
 
-    public function save($identityId)
+    public function save($identityId, array $additionalData = [])
     {
-        $token = $this->createToken((string)$identityId, $this->ttl);
+        $token = $this->createToken((string)$identityId, $this->ttl, $additionalData);
 
         if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/'))
             throw new \Exception("could not set cookie {$this->cookieName}");
@@ -73,22 +72,10 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
 
     public function load()
     {
-        $jwt = $_COOKIE[$this->cookieName];
-
-        if ($jwt) {
-            try {
-                $token = JWT::decode($jwt, $this->secret, ['HS512']);
-
-                if ($token->data->userId instanceof \stdClass) {
-                    return null;
-                }
-
-                return (string)$token->data->userId;
-            } catch (\Throwable $e) {
-                //throw $e;
-            }
+        $data = $this->loadAdditionalData();
+        if($data){
+            return $data->userId;
         }
-
         return null;
     }
 
@@ -96,5 +83,27 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     {
         setcookie($this->cookieName, '', time() - 86400, '/');
         unset($_COOKIE[$this->cookieName]);
+    }
+
+    /**
+     * @return \stdClass|null
+     */
+    public function loadAdditionalData()
+    {
+        $jwt = $_COOKIE[$this->cookieName];
+
+        if ($jwt) {
+            try {
+                $token = JWT::decode($jwt, $this->secret, ['HS512']);
+                if ($token->data instanceof \stdClass) {
+                    return $token->data;
+                }
+                return null;
+            } catch (\Throwable $e) {
+                //throw $e;
+            }
+        }
+
+        return null;
     }
 }
