@@ -66,14 +66,15 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     {
         $token = $this->createToken((string)$identityId, $this->ttl, $additionalData);
 
-        if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/'))
+        if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/')) {
             throw new \Exception("could not set cookie {$this->cookieName}");
+        }
     }
 
     public function load()
     {
         $data = $this->loadAdditionalData();
-        if($data){
+        if ($data) {
             return $data->userId;
         }
         return null;
@@ -105,5 +106,10 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         }
 
         return null;
+    }
+
+    public function decodeToken(string $jwt): \stdClass
+    {
+        return JWT::decode($jwt, $this->secret, ['HS512']);
     }
 }
