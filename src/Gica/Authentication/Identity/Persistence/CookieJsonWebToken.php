@@ -15,6 +15,9 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     private $cookieName;
     private $ttl;
     private $cookieTtl;
+    private $httpOnly = true;
+    private $domain = '';
+    private $secure = false;
 
     public function __construct($secret, $cookieName = 'jwt', $ttl = 3600000)
     {
@@ -32,6 +35,21 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     public function setCookieTtl(int $cookieTtl)
     {
         $this->cookieTtl = $cookieTtl;
+    }
+
+    public function setDomain(string $domain)
+    {
+        $this->domain = $domain;
+    }
+
+    public function setSecure(bool $secure)
+    {
+        $this->secure = $secure;
+    }
+
+    public function setHttpOnly(bool $httpOnly)
+    {
+        $this->httpOnly = $httpOnly;
     }
 
     public function createToken(string $userId, int $ttl, array $additionalData = [])
@@ -66,7 +84,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     {
         $token = $this->createToken((string)$identityId, $this->ttl, $additionalData);
 
-        if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/')) {
+        if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/' , $this->domain, $this->secure, $this->httpOnly)) {
             throw new \Exception("could not set cookie {$this->cookieName}");
         }
     }
@@ -82,7 +100,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
 
     public function clear()
     {
-        setcookie($this->cookieName, '', time() - 86400, '/');
+        setcookie($this->cookieName, '', time() - 86400, '/', $this->domain, $this->secure, $this->httpOnly);
         unset($_COOKIE[$this->cookieName]);
     }
 
