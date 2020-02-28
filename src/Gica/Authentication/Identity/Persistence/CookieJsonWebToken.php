@@ -18,6 +18,9 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     private $httpOnly = true;
     private $domain = '';
     private $secure = false;
+    private $options = [
+        'samesite' => 'Lax'
+    ];
 
     public function __construct($secret, $cookieName = 'jwt', $ttl = 3600000)
     {
@@ -35,6 +38,13 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     public function setCookieTtl(int $cookieTtl)
     {
         $this->cookieTtl = $cookieTtl;
+    }
+
+    /**
+     * @param string $samesite None|Lax|Strict
+     */
+    public function setSameSite(string $samesite){
+        $this->options['samesite'] = $samesite;
     }
 
     public function setDomain(string $domain)
@@ -84,7 +94,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     {
         $token = $this->createToken((string)$identityId, $this->ttl, $additionalData);
 
-        if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/' , $this->domain, $this->secure, $this->httpOnly)) {
+        if (false === setcookie($this->cookieName, $token, $this->cookieTtl ? time() + $this->cookieTtl : 0, '/' , $this->domain, $this->secure, $this->httpOnly, $this->options)) {
             throw new \Exception("could not set cookie {$this->cookieName}");
         }
     }
