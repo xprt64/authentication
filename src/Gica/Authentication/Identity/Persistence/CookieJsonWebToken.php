@@ -125,11 +125,9 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
      */
     public function loadAdditionalData()
     {
-        $jwt = $_COOKIE[$this->cookieName];
-
-        if ($jwt) {
+        if (isset($_COOKIE[$this->cookieName]) && is_string($_COOKIE[$this->cookieName])) {
             try {
-                $token = JWT::decode($jwt, $this->secret, ['HS512']);
+                $token = JWT::decode($_COOKIE[$this->cookieName], $this->secret, ['HS512']);
                 if ($token->data instanceof \stdClass) {
                     return $token->data;
                 }
