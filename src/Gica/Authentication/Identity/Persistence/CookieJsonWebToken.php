@@ -7,6 +7,7 @@ namespace Gica\Authentication\Identity\Persistence;
 
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Gica\Authentication\Identity\Persistence;
 
 class CookieJsonWebToken implements Persistence, TokenBasedPersistence
@@ -127,7 +128,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     {
         if (isset($_COOKIE[$this->cookieName]) && is_string($_COOKIE[$this->cookieName])) {
             try {
-                $token = JWT::decode($_COOKIE[$this->cookieName], $this->secret, ['HS512']);
+                $token = JWT::decode($_COOKIE[$this->cookieName], new Key($this->secret, 'HS512'));
                 if ($token->data instanceof \stdClass) {
                     return $token->data;
                 }
@@ -142,6 +143,6 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
 
     public function decodeToken(string $jwt): \stdClass
     {
-        return JWT::decode($jwt, $this->secret, ['HS512']);
+        return JWT::decode($jwt, new Key($this->secret, 'HS512'));
     }
 }
