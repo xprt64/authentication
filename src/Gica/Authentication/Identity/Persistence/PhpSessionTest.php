@@ -74,11 +74,8 @@ class MySessionHandler implements \SessionHandlerInterface
 
 class MyUser
 {
-    private $id;
-
-    public function __construct($id)
+    public function __construct(private $id)
     {
-        $this->id = $id;
     }
 
     public function getId()

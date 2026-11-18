@@ -8,16 +8,12 @@ namespace Gica\Authentication\Password\Rules;
 
 class MinimumLength implements \Gica\Authentication\Password\Rule
 {
-    /** @var int */
-    private $minimumLength;
-
-    /** @var string */
-    private $messageTemplate;
-
-    public function __construct($minimumLength, $messageTemplate = "Parola trebuie sa fie de minim {minimumLength} caractere")
+    /**
+     * @param int $minimumLength
+     * @param string $messageTemplate
+     */
+    public function __construct(private $minimumLength, private $messageTemplate = "Parola trebuie sa fie de minim {minimumLength} caractere")
     {
-        $this->minimumLength = $minimumLength;
-        $this->messageTemplate = $messageTemplate;
     }
 
     public function validate($password)

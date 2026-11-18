@@ -12,9 +12,6 @@ use Gica\Authentication\Identity\Persistence;
 
 class CookieJsonWebToken implements Persistence, TokenBasedPersistence
 {
-    private $secret;
-    private $cookieName;
-    private $ttl;
     private $cookieTtl;
     private $options = [
         'expires'  => null,
@@ -25,12 +22,9 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         'samesite' => 'Lax',
     ];
 
-    public function __construct($secret, $cookieName = 'jwt', $ttl = 3600000)
+    public function __construct(private $secret, private $cookieName = 'jwt', private $ttl = 3600000)
     {
-        $this->secret = $secret;
-        $this->cookieName = $cookieName;
-        $this->ttl = $ttl;
-        $this->cookieTtl = $ttl;
+        $this->cookieTtl = $this->ttl;
     }
 
     public function setTtl(int $ttl)

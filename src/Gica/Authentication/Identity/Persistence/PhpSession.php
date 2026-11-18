@@ -12,11 +12,9 @@ use Gica\Authentication\Identity\Persistence;
 class PhpSession implements Persistence
 {
     protected $started = false;
-    protected $sessionKeyName;
 
-    public function __construct($sessionKeyName = 'authenticatedIdentity')
+    public function __construct(protected $sessionKeyName = 'authenticatedIdentity')
     {
-        $this->sessionKeyName = $sessionKeyName;
     }
 
     /**
