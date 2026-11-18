@@ -60,6 +60,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         $this->options['httponly'] = $httpOnly;
     }
 
+    #[\Override]
     public function createToken(string $userId, int $ttl, array $additionalData = [])
     {
 
@@ -88,6 +89,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         );
     }
 
+    #[\Override]
     public function save($identityId, array $additionalData = [])
     {
         $token = $this->createToken((string)$identityId, $this->ttl, $additionalData);
@@ -98,6 +100,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         }
     }
 
+    #[\Override]
     public function load()
     {
         $data = $this->loadAdditionalData();
@@ -107,6 +110,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
         return null;
     }
 
+    #[\Override]
     public function clear()
     {
         $options = $this->options;
@@ -118,6 +122,7 @@ class CookieJsonWebToken implements Persistence, TokenBasedPersistence
     /**
      * @return \stdClass|null
      */
+    #[\Override]
     public function loadAdditionalData()
     {
         if (isset($_COOKIE[$this->cookieName]) && is_string($_COOKIE[$this->cookieName])) {

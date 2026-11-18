@@ -12,17 +12,20 @@ class InMemory implements \Gica\Authentication\Identity\Persistence
     static $storage;
     static $storageAdditionalData;
 
+    #[\Override]
     public function save($identityId, array $additionalData = [])
     {
         self::$storage = $identityId;
         self::$storageAdditionalData = $additionalData;
     }
 
+    #[\Override]
     public function load()
     {
         return self::$storage;
     }
 
+    #[\Override]
     public function clear()
     {
         self::$storage = null;
@@ -31,6 +34,7 @@ class InMemory implements \Gica\Authentication\Identity\Persistence
     /**
      * @return \stdClass
      */
+    #[\Override]
     public function loadAdditionalData()
     {
         return self::$storageAdditionalData;

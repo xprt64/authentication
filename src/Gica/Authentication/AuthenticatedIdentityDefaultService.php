@@ -17,11 +17,13 @@ class AuthenticatedIdentityDefaultService
      */
     protected $authenticatedIdentityId;
 
+    #[\Override]
     public function isAuthenticated()
     {
         return !!$this->authenticatedIdentityId;
     }
 
+    #[\Override]
     public function getAuthenticatedIdentityId()
     {
         if (!$this->isAuthenticated())
@@ -30,11 +32,13 @@ class AuthenticatedIdentityDefaultService
         return $this->authenticatedIdentityId;
     }
 
+    #[\Override]
     public function unAuthenticate()
     {
         $this->authenticatedIdentityId = null;
     }
 
+    #[\Override]
     public function setAuthenticatedIdentityId(Guid $authenticatedIdentityId)
     {
         $this->authenticatedIdentityId = $authenticatedIdentityId;

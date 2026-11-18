@@ -20,6 +20,7 @@ class PasswordHasherDefault implements Password\PasswordHasher
      */
     protected $algorithm = \PASSWORD_DEFAULT;
 
+    #[\Override]
     public function hashPassword($password)
     {
         return password_hash($password, $this->getAlgorithm(), [
@@ -63,11 +64,13 @@ class PasswordHasherDefault implements Password\PasswordHasher
         return $this;
     }
 
+    #[\Override]
     public function verifyPassword($password, $hash)
     {
         return password_verify($password, $hash);
     }
 
+    #[\Override]
     public function passwordNeedsRehash($hash, array $options = [])
     {
         $options['cost'] = $this->getCost();

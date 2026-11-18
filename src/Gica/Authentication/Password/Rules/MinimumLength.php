@@ -16,12 +16,14 @@ class MinimumLength implements \Gica\Authentication\Password\Rule
     {
     }
 
+    #[\Override]
     public function validate($password)
     {
         if(strlen($password) < $this->minimumLength)
             throw new \Exception($this->getDescription());
     }
 
+    #[\Override]
     function getDescription()
     {
         return (string)str_replace('{minimumLength}', $this->minimumLength, $this->messageTemplate);

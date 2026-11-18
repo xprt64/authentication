@@ -27,6 +27,7 @@ class PhpSession implements Persistence
         return $this;
     }
 
+    #[\Override]
     public function save($identityId, array $additionalData = [])
     {
         $this->sessionStart();
@@ -38,12 +39,14 @@ class PhpSession implements Persistence
     /**
      * @return mixed
      */
+    #[\Override]
     public function load()
     {
         $this->sessionStart();
         return $_SESSION[$this->getSessionKeyName()];
     }
 
+    #[\Override]
     public function clear()
     {
         $this->sessionStart();
@@ -77,6 +80,7 @@ class PhpSession implements Persistence
     /**
      * @return \stdClass
      */
+    #[\Override]
     public function loadAdditionalData()
     {
         $this->sessionStart();
